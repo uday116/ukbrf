@@ -1,0 +1,26 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies (if needed)
+        run: |
+          # Add commands to install any project dependencies here
+
+      - name: Deploy to Server
+        run: |
+          # SSH into your VPS and perform the deployment steps here
+          # Example:
+          # ssh user@your_server_ip 'cd /path/to/your/wordpress/directory && git pull origin main'
+
+      # Add any additional steps as needed, such as database migrations or cache clearing.
