@@ -1,4 +1,4 @@
-name: Deploy to VPS
+ name: Deploy to vps
 
 on:
   push:
@@ -10,17 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Dependencies (if needed)
-        run: |
-          # Add commands to install any project dependencies here
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1' 
 
-      - name: Deploy to Server
+      - name: Install dependencies
         run: |
-          # SSH into your VPS and perform the deployment steps here
-          # Example:
-          # ssh user@your_server_ip 'cd /path/to/your/wordpress/directory && git pull origin main'
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          composer install --no-dev --optimize-autoloader
 
-      # Add any additional steps as needed, such as database migrations or cache clearing.
+      - name: Deploy to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ./
+          target: /var/www/wordpress/
